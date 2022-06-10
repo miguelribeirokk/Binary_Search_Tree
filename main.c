@@ -1,64 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "funcoes.h"
+#include "tad.h"
 
 
 int main(){
-    int a, b, c, d, e;
     apontador no;
     IniciaArvore(&no);
-    
-    for (int i = 0; i < 10; i++) {
-        Insere(&no, rand()%100);
+    FILE *arquivo;
+    char linha[100];
+    arquivo = fopen("alunos.txt", "r");
+    while(fgets(linha, 100, arquivo) != NULL){
+        char *p;
+        p = strtok(linha, "-");
+        TipoAluno aluno;
+        strcpy(aluno.nome, p);
+        p = strtok(NULL, "-");
+        aluno.matricula = atoi(p);
+        p = strtok(NULL, "-");
+        aluno.nota = atof(p);
+        Insere(&no, aluno);
     }
-    
-    printf("\nOrdem: \n");
+    puts("\nNome - Matricula - Nota");
+    puts("\nPercorrendo em ordem:");
     percorrer(no);
+    puts("\nPercorrendo inversa:");
+    percorrer_inversa(no);
+    int h = contar_Aluno(no);  
+    printf("\n");
+    printf("\nQuantidade de alunos: %d\n", h);
+    menor_nota(no);
     
     
-    printf("\n\nPre ordem: \n");
-    pre_ordem(no);
+    float soma = soma_das_notas(&no, h);
+    printf("\nSoma das notas: %.2f\n", soma);
+    float media = media_das_notas(soma, h);
+    printf("\nMedia das notas: %.2f\n", media);
+    printf("\nAlunos com nota maior que a media: \n");
+    maiores_que_media(&no, media);
+    fclose(arquivo);
     
-    printf("\n\nPos ordem: \n");
-    pos_ordem(no);
-    printf("\n");
-
-    
-    printf("\nProfundidade: \n");
-    scanf("%d", &a);
-    printf("%d", profundidade(no, a));
-    printf("\n");
-
-    //maior elemento
-    printf("\nMaior elemento: \n");
-    printf("%d\n", maior_elemento(no));
-
-    //menor elemento
-    printf ("\n\nMenor elemento: \n");
-    menor_elemento(no, &c);
-    printf("\n");
-
-    //retirar um elemento
-    printf ("\nRetirar um elemento: \n");
-    scanf("%d", &d);
-    retira_no(&no, d);
-    percorrer(no);
-    printf("\n");
-
-    //numero de nos
-    printf ("\nNumero de nos: \n");
-    printf("%d", numero_de_nos(no));
-    printf("\n");
-
-    //esta na arvore
-    printf ("\nEsta na arvore: \n");
-    scanf("%d", &d);
-    printf("%d", estaNaArvore(no, d));
-    printf("\n");
-
     return 0;
-
-
-    
 }
+    
